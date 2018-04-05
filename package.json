@@ -1,5 +1,5 @@
 {
-  "name": "vk-longpoll",
+  "name": "vk-botlongpoll",
   "version": "0.3.1",
   "description": "VK Bots Longpoll api",
   "main": "example.js",
@@ -24,6 +24,6 @@
   "homepage": "https://github.com/DuckerMan/vk-longpoll#readme",
   "dependencies": {
     "node-vk-sdk": "^1.0.5",
-    "promise-vksdk": "^5.3.2"
+    "promise-vksdk": "^5.3.3"
   }
 }

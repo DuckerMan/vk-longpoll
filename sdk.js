@@ -21,6 +21,7 @@ class VkBot {
 	 */
 	constructor(config) {
 		console.log('init');
+
 		const EventEmitter = require('events').EventEmitter;
 		this.event = new EventEmitter;
 
@@ -28,12 +29,11 @@ class VkBot {
 
 		let VK = require('promise-vksdk');
 		this.__BotsLongPollUpdatesProvider = BotsLongPollUpdatesProvider;
-		this.__request = require('request');
 
 		this.vk = new VK(config);
 		this.vk.setToken(config.token);
 		this.vk.setSecureRequests(true);
-
+		this.api = new (require('./api.js'))(this.vk);
 		this.__api = new VKApi({
 			token: config.token,
 			logger: new ConsoleLogger()
@@ -49,8 +49,12 @@ class VkBot {
 
 				if(upd.type == 'message_new'){
 					if(config.autoRead) this.vk.request('messages.markAsRead', {message_ids:upd.object.id});
-
-					this.event.emit(`msg ${upd.object.body}`, upd.object);
+					
+					let searchText = upd.object.body.split(' ')[0];
+					let params = upd.object.body.replace(`${searchText} `, '');
+					upd.object.params = params;
+					this.event.emit(`msg ${searchText}`, upd.object);
+					this.event.emit(`message`, upd.object);
 				}
 
 				if(upd.type == 'group_leave') this.event.emit(`leave`, upd.object);
@@ -77,30 +81,19 @@ class VkBot {
 	onJoin(cb){
 		this.event.on('join', cb);
 	}
-
-
-
-
-
 	/**
-	 * Send message with TEXT
-	 * @param  {integer} id   user id
-	 * @param  string text Text
-	 * @return {Promise}      Promise with api-response
+	 * OnMessage event - works ALWAYS
+	 * @param  {Function} cb [description]
+	 * @return {[type]}      [description]
 	 */
-	async sendMessageText(id, text) {
-		return this.vk.request('messages.send', {user_id:id, message:text});
+	onMessage(cb){
+		this.event.on('message', cb);
 	}
 
-	/**
-	 * Send message with attachment
-	 * @param  {integer} id   user id
-	 * @param  string attachment VK attachment
-	 * @return {Promise}      Promise with api-response
-	 */
-	async sendMessageAttachment(id, attachment){
-		return this.vk.request('messages.send', {user_id:id, attachment:attachment});
-	}
+
+
+
+
 
 }
 
