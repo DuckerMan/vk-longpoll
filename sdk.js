@@ -53,6 +53,7 @@ class VkBot {
 					let searchText = upd.object.body.split(' ')[0];
 					let params = upd.object.body.replace(`${searchText} `, '');
 					upd.object.params = params;
+					if(this.event.listeners(`msg ${searchText}`).length==0) this.event.emit('without message', upd.object);
 					this.event.emit(`msg ${searchText}`, upd.object);
 					this.event.emit(`message`, upd.object);
 				}
@@ -82,9 +83,15 @@ class VkBot {
 		this.event.on('join', cb);
 	}
 	/**
+	 * If We get message Without Event.
+	 * @param  {Function} cb callback
+	 */
+	onMessageWithoutEvent(cb){
+		this.event.on('without message', cb);
+	}
+	/**
 	 * OnMessage event - works ALWAYS
 	 * @param  {Function} cb [description]
-	 * @return {[type]}      [description]
 	 */
 	onMessage(cb){
 		this.event.on('message', cb);

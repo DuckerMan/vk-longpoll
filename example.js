@@ -30,6 +30,7 @@ VkBot.onLeave((d) => VkBot.api.sendMessageAttachment(d.user_id, 'photo164124208_
 VkBot.onJoin((d) => VkBot.api.sendMessageText(d.user_id, 'Hello!'))
 
 VkBot.onMessage(msg => console.log(msg))
+VkBot.onMessageWithoutEvent(msg => console.log(msg))
 
 /*
 info is:

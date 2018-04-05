@@ -9,7 +9,7 @@
 <pre>
 	You can see an example in example.js
 
-	Documentation <b>will be later</b>
+	Also, you can read documentations
 
 </pre>
 
