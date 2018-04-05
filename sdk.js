@@ -10,7 +10,7 @@ class VkBot {
 			'appId': 2807970, // application vk id
 			'appSecret': 'L14ZKpgQPalJdumI6vFK', //secret aplication key
 			'language': 'ru', // api language
-			'token':'3b814061febe10c0d6d8b02ff661dda7739f2a8e49dae78ee2549a139d4ed02a46b0e2377fdae8dca7f9f', // secret group token
+			'token':'', // secret group token
 			'groupId':142102660, // group id
 			'version':'5.74', // api version
 			'commandDivider':'.', // command start char, example : .test
