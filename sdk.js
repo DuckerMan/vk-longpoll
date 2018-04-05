@@ -97,5 +97,4 @@ class VkBot {
 
 }
 
-
 module.exports = VkBot;
