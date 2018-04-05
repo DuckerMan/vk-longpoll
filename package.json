@@ -1,6 +1,6 @@
 {
   "name": "vk-botlongpoll",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "description": "VK Bots Longpoll api",
   "main": "sdk.js",
   "scripts": {
