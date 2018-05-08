@@ -1,16 +1,16 @@
-<h1>VK-Longpoll</h1>
-<hr>
-<h3>Description</h3>
+# VK-Longpoll
+### Description
 
-<pre>This library helps to create bot with new API.</pre>
+```
+This library helps to create bot with new API.
+```
 
-<h3>How to use</h3>
+### How to use
 
-<pre>
-	You can see an example in example.js
+```
+You can see an example in example.js
 
-	Also, you can read documentations
+Also, you can read documentations
+```
 
-</pre>
-
-<p>We are waiting PR</p>
+We are waiting PR
