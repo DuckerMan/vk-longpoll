@@ -1,6 +1,9 @@
-const VkBot = new(require('./sdk.js'))({
-	'appId': 2807970,
-	'appSecret': 'L14ZKpgQPalJdumI6vFK',
+const sdk = require('./sdk.js');
+const Sdk = new sdk;
+
+const VkBot = Sdk({
+	'appId': 2274003,
+	'appSecret': 'hHbZxrka2uZ6jB1inYsH',
 	'language': 'ru',
 	'token': '',
 	'groupId': 142102660,
@@ -26,11 +29,16 @@ const VkBot = new(require('./sdk.js'))({
 		}
  */
 
-VkBot.onLeave((d) => VkBot.api.sendMessageAttachment(d.user_id, 'photo164124208_456247141_48cc142a1cbfbd8c4e'))
-VkBot.onJoin((d) => VkBot.api.sendMessageText(d.user_id, 'Hello!'))
+VkBot.onLeave(data => {
+	VkBot.api.sendMessageAttachment(data.user_id, 'photo164124208_456247141_48cc142a1cbfbd8c4e');
+});
 
-VkBot.onMessage(msg => console.log(msg))
-VkBot.onMessageWithoutEvent(msg => console.log(msg))
+VkBot.onJoin(data => {
+	VkBot.api.sendMessageText(data.user_id, 'Hello!');
+});
+
+VkBot.onMessage(msg => console.log(msg));
+VkBot.onMessageWithoutEvent(msg => console.log(msg));
 
 /*
 info is:
@@ -46,4 +54,7 @@ info is:
   }
 
  */
-VkBot.hear('test', (info) => {VkBot.sendMessageText(info.user_id, 'Test-test')});
+ 
+VkBot.hear('test', info => {
+	VkBot.sendMessageText(info.user_id, 'Test-test');
+});

@@ -25,7 +25,7 @@ class VkBot {
 		const EventEmitter = require('events').EventEmitter;
 		this.event = new EventEmitter;
 
-		const {VKApi, ConsoleLogger, BotsLongPollUpdatesProvider} = require('node-vk-sdk');
+		const { VKApi, ConsoleLogger, BotsLongPollUpdatesProvider } = require('node-vk-sdk');
 
 		let VK = require('promise-vksdk');
 		this.__BotsLongPollUpdatesProvider = BotsLongPollUpdatesProvider;
@@ -40,26 +40,34 @@ class VkBot {
 		})
 
 		let updatesProvider = new BotsLongPollUpdatesProvider(this.__api, config.groupId);
+		
 		this.updatesProvider = updatesProvider;
-
 		this.commandDivider = config.commandDivider;
+		
 		let that = this;
-		updatesProvider.getUpdates(updates=>{
-			updates.forEach(upd=>{
+		
+		updatesProvider.getUpdates(updates => {
+			updates.forEach(upd => {
 
-				if(upd.type == 'message_new'){
-					if(config.autoRead) this.vk.request('messages.markAsRead', {message_ids:upd.object.id});
+				if(upd.type == 'message_new') {
+					if(config.autoRead) this.vk.request('messages.markAsRead',
+																							{ message_ids: upd.object.id });
 					
-					let searchText = upd.object.body.split(' ')[0];
-					let params = upd.object.body.replace(`${searchText} `, '');
+					let searchText = upd.object.body.split(' ')[0],
+							params = upd.object.body.replace(`${searchText} `, '');
+					
 					upd.object.params = params;
-					if(this.event.listeners(`msg ${searchText}`).length==0) this.event.emit('without message', upd.object);
+					
+					if(this.event.listeners(`msg ${searchText}`).length == 0) {
+						this.event.emit('without message', upd.object);
+					}
+					
 					this.event.emit(`msg ${searchText}`, upd.object);
-					this.event.emit(`message`, upd.object);
+					this.event.emit('message', upd.object);
 				}
 
-				if(upd.type == 'group_leave') this.event.emit(`leave`, upd.object);
-				if(upd.type == 'group_join') this.event.emit(`join`, upd.object);
+				if(upd.type == 'group_leave') this.event.emit('leave', upd.object);
+				if(upd.type == 'group_join') this.event.emit('join', upd.object);
 
 			})
 		});
@@ -75,33 +83,29 @@ class VkBot {
 		this.event.on(`msg ${this.commandDivider}${text}`, cb);
 	}
 
-	onLeave(cb){
+	onLeave(cb) {
 		this.event.on('leave', cb);
 	}
 
-	onJoin(cb){
+	onJoin(cb) {
 		this.event.on('join', cb);
 	}
+	
 	/**
 	 * If We get message Without Event.
 	 * @param  {Function} cb callback
 	 */
-	onMessageWithoutEvent(cb){
+	onMessageWithoutEvent(cb) {
 		this.event.on('without message', cb);
 	}
+	
 	/**
 	 * OnMessage event - works ALWAYS
 	 * @param  {Function} cb [description]
 	 */
-	onMessage(cb){
+	onMessage(cb) {
 		this.event.on('message', cb);
 	}
-
-
-
-
-
-
 }
 
 module.exports = VkBot;

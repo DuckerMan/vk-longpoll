@@ -1,8 +1,8 @@
-<h1>Documentation</h1>
+## Documentation
 
-<h3>Initialization</h3>
+### Initialization
 
-<code>
+```javascript
 	const VkBot = new(require('./sdk.js'))({
 	'appId': 2807970,
 	'appSecret': 'L14ZKpgQPalJdumI6vFK',
@@ -30,22 +30,20 @@
 			'getInfoAboutUser':true
 		}
  */
-</code>
+```
 
-<p>or you can...</p>
+or you can...
 
-<code>
-	
+```javascript
 	const VkLong = require('vk-botlongpoll');
 	class CupidonBot extends VkLong {
 
 	}
+```
 
-</code>
-
-<h3>Functions</h3>
-<h5>API:</h6>
-<p>all api functions in VkBot.api</p>
+### Functions
+##### API:
+all api functions in VkBot.api
 
 
-<h2>SEE EXAMPLES!</h2>
+### SEE EXAMPLES!
