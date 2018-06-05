@@ -21,49 +21,37 @@ class VkBot {
 	 */
 	constructor(config) {
 		console.log('init');
-
 		const EventEmitter = require('events').EventEmitter;
 		this.event = new EventEmitter;
 
 		const { VKApi, ConsoleLogger, BotsLongPollUpdatesProvider } = require('node-vk-sdk');
-
-		let VK = require('promise-vksdk');
-		this.__BotsLongPollUpdatesProvider = BotsLongPollUpdatesProvider;
-
-		this.vk = new VK(config);
-		this.vk.setToken(config.token);
-		this.vk.setSecureRequests(true);
-		this.api = new (require('./api.js'))(this.vk);
-		this.__api = new VKApi({
+		let lang =  (typeof config.language == 'undefined') ? 'ru' : config.language;
+		this._api = new VKApi({
 			token: config.token,
+			lang:lang,
 			logger: new ConsoleLogger()
 		})
 
-		let updatesProvider = new BotsLongPollUpdatesProvider(this.__api, config.groupId);
-		
-		this.updatesProvider = updatesProvider;
+		this.api = new (require('./api.js'))(this._api); // Public
+		this.updatesProvider = new BotsLongPollUpdatesProvider(this._api, config.groupId);
 		this.commandDivider = config.commandDivider;
 		
 		let that = this;
-		
-		updatesProvider.getUpdates(updates => {
-			updates.forEach(upd => {
 
+		this.updatesProvider.getUpdates(updates => {
+			updates.forEach(upd => {
 				if(upd.type == 'message_new') {
-					if(config.autoRead) this.vk.request('messages.markAsRead',
-																							{ message_ids: upd.object.id });
+					if(config.autoRead) this.api.readMessage(upd.object.id); // Auto read message
 					
 					let searchText = upd.object.body.split(' ')[0],
 							params = upd.object.body.replace(`${searchText} `, '');
 					
 					upd.object.params = params;
 					
-					if(this.event.listeners(`msg ${searchText}`).length == 0) {
-						this.event.emit('without message', upd.object);
-					}
+					if(this.event.listeners(`msg ${searchText}`).length == 0) this.event.emit('without message', upd.object);
 					
-					this.event.emit(`msg ${searchText}`, upd.object);
-					this.event.emit('message', upd.object);
+						this.event.emit(`msg ${searchText}`, upd.object);
+						this.event.emit('message', upd.object);
 				}
 
 				if(upd.type == 'group_leave') this.event.emit('leave', upd.object);
