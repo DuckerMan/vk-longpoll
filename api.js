@@ -9,12 +9,15 @@ class Api {
 	 * @param  {integer} id   user id
 	 * @param  {string} text Message
 	 * @param  {string} attachment VK Attachment - photoOWNERID_ID
+	 * @params {object} keyboard VK Keyboard
 	 * @return {Promise}      Promise with api-response
 	 */
-	async sendMessage(id, text, attachment) {
+	async sendMessage(id, text, attachment, keyboard) {
 		let params = {user_id:id, message:text}; // default params
 
 		if(attachment) params.attachment = attachment;
+		if(keyboard) params.keyboard = keyboard;
+		
 		return await this.vk.messagesSend(params);
 	}
 	/**

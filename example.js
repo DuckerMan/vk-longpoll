@@ -3,7 +3,7 @@ const BotParent = require('./sdk.js');
 const VkBot = new BotParent({
 	'language': 'ru',
 	'token': '',
-	'groupId': 142102660,
+	'groupId': 168059774,
 	'commandDivider': '.',
 	'autoRead': true,
 	'getInfoAboutUser': true
@@ -35,7 +35,3 @@ msg is:
   }
 
  */
- 
-VkBot.hear('test', info => {
-	VkBot.sendMessageText(info.user_id, 'Test-test');
-});

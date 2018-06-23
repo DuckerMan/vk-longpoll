@@ -35,16 +35,13 @@ class VkBot {
 		this.api = new (require('./api.js'))(this._api); // Public
 		this.updatesProvider = new BotsLongPollUpdatesProvider(this._api, config.groupId);
 		this.commandDivider = config.commandDivider;
-		
-		let that = this;
-
 		this.updatesProvider.getUpdates(updates => {
 			updates.forEach(upd => {
 				if(upd.type == 'message_new') {
 					if(config.autoRead) this.api.readMessage(upd.object.id); // Auto read message
-					
-					let searchText = upd.object.body.split(' ')[0],
-							params = upd.object.body.replace(`${searchText} `, '');
+					let messageBody = upd.object.body || upd.object; // зависит от версии API, TODO
+					let searchText = messageBody.text.split(' ')[0],
+							params = messageBody.text.replace(`${searchText} `, '');
 					
 					upd.object.params = params;
 					
