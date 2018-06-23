@@ -49,6 +49,7 @@ class VkBot {
 						params = messageBody.text.replace(`${searchText} `, '');
 
 					messageBody.params = params;
+					messageBody.reply = (text, attachment, keyboard)=>this.api.sendMessage(messageBody.from_id, text, attachment, keyboard);
 					messageBody.user_id = messageBody.from_id; // обратная совместимость
 
 					if (this.event.listeners(`msg ${searchText}`).length == 0) this.event.emit('without message', messageBody);
