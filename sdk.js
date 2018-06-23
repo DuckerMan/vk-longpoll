@@ -24,35 +24,41 @@ class VkBot {
 		const EventEmitter = require('events').EventEmitter;
 		this.event = new EventEmitter;
 
-		const { VKApi, ConsoleLogger, BotsLongPollUpdatesProvider } = require('node-vk-sdk');
-		let lang =  (typeof config.language == 'undefined') ? 'ru' : config.language;
+		const {
+			VKApi,
+			ConsoleLogger,
+			BotsLongPollUpdatesProvider
+		} = require('node-vk-sdk');
+		let lang = (typeof config.language == 'undefined') ? 'ru' : config.language;
 		this._api = new VKApi({
 			token: config.token,
-			lang:lang,
+			lang: lang,
 			logger: new ConsoleLogger()
 		})
 
-		this.api = new (require('./api.js'))(this._api); // Public
+		this.api = new(require('./api.js'))(this._api); // Public
 		this.updatesProvider = new BotsLongPollUpdatesProvider(this._api, config.groupId);
 		this.commandDivider = config.commandDivider;
+
 		this.updatesProvider.getUpdates(updates => {
 			updates.forEach(upd => {
-				if(upd.type == 'message_new') {
-					if(config.autoRead) this.api.readMessage(upd.object.id); // Auto read message
+				if (upd.type == 'message_new') {
+					if (config.autoRead) this.api.readMessage(upd.object.id); // Auto read message
 					let messageBody = upd.object.body || upd.object; // зависит от версии API, TODO
 					let searchText = messageBody.text.split(' ')[0],
-							params = messageBody.text.replace(`${searchText} `, '');
-					
-					upd.object.params = params;
-					
-					if(this.event.listeners(`msg ${searchText}`).length == 0) this.event.emit('without message', upd.object);
-					
-						this.event.emit(`msg ${searchText}`, upd.object);
-						this.event.emit('message', upd.object);
+						params = messageBody.text.replace(`${searchText} `, '');
+
+					messageBody.params = params;
+					messageBody.user_id = messageBody.from_id; // обратная совместимость
+
+					if (this.event.listeners(`msg ${searchText}`).length == 0) this.event.emit('without message', messageBody);
+					this.event.emit(`payload ${messageBody.payload}`, messageBody);
+					this.event.emit(`msg ${searchText}`, messageBody);
+					this.event.emit('message', messageBody);
 				}
 
-				if(upd.type == 'group_leave') this.event.emit('leave', upd.object);
-				if(upd.type == 'group_join') this.event.emit('join', upd.object);
+				if (upd.type == 'group_leave') this.event.emit('leave', upd.object);
+				if (upd.type == 'group_join') this.event.emit('join', upd.object);
 
 			})
 		});
@@ -75,7 +81,7 @@ class VkBot {
 	onJoin(cb) {
 		this.event.on('join', cb);
 	}
-	
+
 	/**
 	 * If We get message Without Event.
 	 * @param  {Function} cb callback
@@ -83,7 +89,15 @@ class VkBot {
 	onMessageWithoutEvent(cb) {
 		this.event.on('without message', cb);
 	}
-	
+	/**
+	 * При получении сообщения с пэйлоад
+	 * @param  {string}   payload Строка пейлоада
+	 * @param  {Function} cb      callback
+	 */
+	onPayload(payload, cb) {
+		this.event.on(`payload ${JSON.stringify(payload)}`, cb);
+	}
+
 	/**
 	 * OnMessage event - works ALWAYS
 	 * @param  {Function} cb [description]

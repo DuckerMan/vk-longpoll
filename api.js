@@ -6,18 +6,17 @@ class Api {
 	
 	/**
 	 * Send message 
-	 * @param  {integer} id   user id
-	 * @param  {string} text Message
-	 * @param  {string} attachment VK Attachment - photoOWNERID_ID
-	 * @params {object} keyboard VK Keyboard
-	 * @return {Promise}      Promise with api-response
+	 * @param  {integer} id   Айди пользователя
+	 * @param  {string} text Сообщение
+	 * @param  {string} attachment Аттачмент вконтакте
+	 * @param  {object} keyboard Клавиатура ВК
+	 * @return {Promise}      Промис с ответом АПИ
 	 */
 	async sendMessage(id, text, attachment, keyboard) {
-		let params = {user_id:id, message:text}; // default params
+		let params = {user_id:id, message:text}; // дефолтные параметры
 
 		if(attachment) params.attachment = attachment;
-		if(keyboard) params.keyboard = keyboard;
-		
+		if(keyboard) params.keyboard=JSON.stringify(keyboard);
 		return await this.vk.messagesSend(params);
 	}
 	/**
