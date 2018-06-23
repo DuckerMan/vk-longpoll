@@ -14,7 +14,8 @@ class Api {
 	 */
 	async sendMessage(id, text, attachment, keyboard) {
 		let params = {user_id:id, message:text}; // дефолтные параметры
-
+		
+		if(!text) delete params.message;
 		if(attachment) params.attachment = attachment;
 		if(keyboard) params.keyboard=JSON.stringify(keyboard);
 		return await this.vk.messagesSend(params);
